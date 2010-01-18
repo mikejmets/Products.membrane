@@ -1,7 +1,13 @@
 from StringIO import StringIO
 
-from Products.Five.site.localsite import ISite
-from Products.Five.site.localsite import enableLocalSiteHook
+try:
+    from zope.location.interfaces import ISite
+    def enableLocalSiteHook(site):
+        pass
+except ImportError:
+    # BBB Zope 2.10
+    from zope.app.component.interfaces import ISite
+    from Products.Five.site.localsite import enableLocalSiteHook
 
 from Products.CMFCore.utils import getToolByName
 
