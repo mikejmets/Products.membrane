@@ -3,7 +3,6 @@ from Acquisition import aq_parent
 from zope.interface import Interface
 from zope.interface import providedBy
 from zope.interface import implements
-from zope.app.apidoc.component import getRequiredAdapters
 from Products.CMFCore.utils import getToolByName
 from Products.membrane.interfaces.user import IMembraneUserObject
 from Products.membrane.interfaces.group import IGroup
@@ -11,6 +10,27 @@ from Products.membrane.interfaces.membrane_tool import IMembraneTool
 from zope.component import getGlobalSiteManager
 from plone.indexer import indexer
 from collective.indexing.interfaces import IIndexQueueProcessor
+
+def getRequiredAdapters(iface, withViews=False):
+    """Get adapter registrations where the specified interface is required."""
+    from zope.publisher.interfaces import IRequest
+    gsm = getGlobalSiteManager()
+    for meth in ('registeredAdapters',
+                 'registeredSubscriptionAdapters',
+                 'registeredHandlers'):
+
+        for reg in getattr(gsm, meth)():
+            # Ignore adapters that have no required interfaces
+            if len(reg.required) == 0:
+                continue
+            # Ignore views
+            if not withViews and reg.required[-1].isOrExtends(IRequest):
+                continue
+            # Only get the adapters for which this interface is required
+            for required_iface in reg.required:
+                if iface.isOrExtends(required_iface):
+                    yield reg
+
 
 @indexer(Interface, IMembraneTool)
 def object_implements(obj):
