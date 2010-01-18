@@ -2,7 +2,12 @@ from zope.interface import implements
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.event import notify
 
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass
+except ImportError:
+    # BBB Zope 2.10 and older
+    from Globals import InitializeClass
+
 from Acquisition import aq_base
 from AccessControl import ClassSecurityInfo
 from persistent.list import PersistentList
