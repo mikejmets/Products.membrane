@@ -266,7 +266,7 @@ class MembraneUserManager(BasePlugin, Cacheable):
             adder.addUser(login, password)
             return True
         else:
-            raise(NotImplemented, "IUserAdder utility not available")
+            return False
 
     def allowPasswordSet(self, login):
         """
