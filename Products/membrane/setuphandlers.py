@@ -21,30 +21,6 @@ from Products.PlonePAS.Extensions.Install import activatePluginInterfaces
 from interfaces import IUserAdder
 from config import TOOLNAME
 
-def _doRegisterUserAdderUtility(context, step_name, profile_id,
-                                utility_name, utility):
-    """ registers utility for adding ExampleMembers """
-    portal = context.getSite()
-    
-    sm = portal.getSiteManager()
-    logger = context.getLogger(step_name)
-    if sm.queryUtility(IUserAdder, name=utility_name) is None:
-        try:
-            sm.registerUtility(provided=IUserAdder, component=utility,
-                               name=utility_name)
-        except TypeError:
-            # BBB For Five 1.4 compatibility
-            sm.registerUtility(interface=IUserAdder, utility=utility,
-                               name=utility_name)
-        logger.info("Registered IUserAdder utility: %s" %
-                    utility_name)
-        mbtool = getToolByName(portal, TOOLNAME)
-        if not mbtool.user_adder:
-            # we become the default if one isn't already specified
-            mbtool.user_adder = utility_name
-    else:
-        logger.info("IUserAdder utility '%s' already registered" %
-                    utility_name)
 
 def _setupPlugins(portal, out):
     """
