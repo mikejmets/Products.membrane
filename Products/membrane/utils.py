@@ -47,6 +47,8 @@ def getCurrentUserAdder(context):
         except StopIteration:
             adder = None
 
+    if adder is None:
+        return adder
     return aq_base(adder).__of__(context)
 
 
