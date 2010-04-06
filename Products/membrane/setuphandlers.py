@@ -18,9 +18,6 @@ from Products.PluggableAuthService.interfaces.plugins \
 
 from Products.PlonePAS.Extensions.Install import activatePluginInterfaces
 
-from interfaces import IUserAdder
-from config import TOOLNAME
-
 
 def _setupPlugins(portal, out):
     """
@@ -52,7 +49,8 @@ def _setupPlugins(portal, out):
         activatePluginInterfaces(portal, 'membrane_properties', out)
 
         plugins = uf.plugins
-        plugins.movePluginsUp(IPropertiesPlugin, ['membrane_properties'])
+        for i in range(len(plugins.listPluginIds(IPropertiesPlugin))):
+            plugins.movePluginsUp(IPropertiesPlugin, ['membrane_properties'])
 
     if 'membrane_user_factory' not in existing:
         membrane.addMembraneUserFactory('membrane_user_factory')
