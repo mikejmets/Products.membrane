@@ -88,14 +88,6 @@ class MembraneUserManager(BasePlugin, Cacheable):
         member = mbtool.getUserObject(login=login)
         if member is None:
             return None
-        # Check workflow state is active
-        wftool = getToolByName(self, 'portal_workflow')
-        review_state = wftool.getInfoFor(member, 'review_state')
-        wfmapper = ICategoryMapper(mbtool)
-        cat_set = generateCategorySetIdForType(member.portal_type)
-        if not wfmapper.isInCategory(cat_set, ACTIVE_STATUS_CATEGORY,
-                                     review_state):
-            return None
         # Delegate to member object
         member = IMembraneUserAuth(member, None)
         if member is None:
