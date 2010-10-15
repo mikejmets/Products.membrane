@@ -17,6 +17,8 @@ if USE_COLLECTIVE_INDEXING:
     from collective.indexing.interfaces import IIndexQueueProcessor
 
 
+INDEXABLE_INTERFACES = (IMembraneUserObject,IGroup)
+
 @indexer(Interface, membrane_tool.IMembraneTool)
 def object_implements(obj):
     """Catalog indexer which returns a list of all interfaces implementing
@@ -73,22 +75,28 @@ class MembraneCatalogProcessor(object):
     if USE_COLLECTIVE_INDEXING:
         implements(IIndexQueueProcessor)
 
+    def isIndexable(self,obj):
+        for interface in INDEXABLE_INTERFACES:
+            if interface(obj,None) is not None:
+                return True
+        return False
+
     def index(self, obj, attributes=[]):
-        if IMembraneUserObject(obj, None) is None:
+        if not self.isIndexable(obj):
             return
         mbtool = getToolByName(obj, "membrane_tool", None)
         if mbtool is not None:
             mbtool.indexObject(obj, attributes or [])
 
     def reindex(self, obj, attributes=[]):
-        if IMembraneUserObject(obj, None) is None:
+        if not self.isIndexable(obj):
             return
         mbtool = getToolByName(obj, 'membrane_tool', None)
         if mbtool is not None:
             mbtool.reindexObject(obj, attributes or [])
 
     def unindex(self, obj):
-        if IMembraneUserObject(obj, None) is None:
+        if not self.isIndexable(obj):
             return
         mbtool = getToolByName(obj, 'membrane_tool', None)
         if mbtool is not None:
