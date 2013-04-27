@@ -293,7 +293,7 @@ class MembraneUserManager(BasePlugin, Cacheable):
         We can verify this by checking if we can adapt to an IUserChanger
         """
         changers = findMembraneUserAspect(
-            self, user_ifaces.IMembraneUserChanger, getUserName=login)
+            self, user_ifaces.IMembraneUserChanger, getLogin=login)
         return bool(changers)
 
     def allowDeletePrincipal(self, login):
@@ -302,7 +302,7 @@ class MembraneUserManager(BasePlugin, Cacheable):
         to an IMembraneUserDeleter
         """
         deleters = findMembraneUserAspect(
-            self, user_ifaces.IMembraneUserDeleter, getUserName=login)
+            self, user_ifaces.IMembraneUserDeleter, getLogin=login)
         return bool(deleters)
 
 InitializeClass(MembraneUserManager)
